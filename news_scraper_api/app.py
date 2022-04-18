@@ -1,15 +1,18 @@
+from typing import Type
 from flask import Blueprint, Flask
 from flask_restful import Api
 
-from config import get_config
+from config import get_config, Config
 from core.db import mongo
 from resources.news import News
 
 
-def create_app(config_obj):
+def create_app(config_obj: Type[Config]):
     app = Flask(__name__)
     app.config.from_object(config_obj)
-    mongo.init_app(app)
+
+    if not config_obj.TESTING:
+        mongo.init_app(app)
 
     api_bp = Blueprint("api", __name__)
     api = Api(api_bp)
