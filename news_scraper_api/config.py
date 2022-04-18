@@ -7,7 +7,7 @@ load_dotenv()
 
 def get_config() -> Type["Config"]:
     config_obj = DevConfig
-    if bool(os.getenv("PROD")):
+    if os.getenv("PROD").lower() == "true":
         config_obj = ProdConfig
 
     return config_obj
