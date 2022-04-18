@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "news-scraper-api"
+version = "0.1.0"
+description = ""
+authors = ["bartosz121 <bmagiera121@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Flask = "^2.1.1"
+python-dotenv = "^0.20.0"
+httpx = "^0.22.0"
+Scrapy = "^2.6.1"
+Flask-RESTful = "^0.3.9"
+mongoengine-goodjson = "^1.1.8"
+# IMPORTANT pymongo version must be <=3.12.3 - if higher mongoengine-goodjson wont work
+pymongo = "<=3.12.3"
+flask-mongoengine = "^1.0.0"
+
+[tool.poetry.dev-dependencies]
+black = { version = "^22.3.0", allow-prereleases = true }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
