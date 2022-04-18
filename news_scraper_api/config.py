@@ -19,9 +19,17 @@ class Config:
 
 class ProdConfig(Config):
     DEBUG = False
+    TESTING = False
     MONGODB_SETTINGS = {"host": os.getenv("PROD_MONGO_URI")}
 
 
 class DevConfig(Config):
     DEBUG = True
+    TESTING = False
     MONGODB_SETTINGS = {"host": os.getenv("DEV_MONGO_URI")}
+
+
+class TestConfig(Config):
+    DEBUG = False
+    TESTING = True
+    MONGODB_SETTINGS = {"host": "mongomock://localhost"}
