@@ -2,12 +2,15 @@ from typing import Type
 from flask import Blueprint, Flask
 from flask_restful import Api
 
-from config import get_config, Config
+from config import Config, ProdConfig, get_config
 from core.db import mongo
 from resources.news import News
 
 
-def create_app(config_obj: Type[Config]):
+def create_app(config_obj: Type[Config] = None):
+    if config_obj is None:
+        config_obj = ProdConfig()
+
     app = Flask(__name__)
     app.config.from_object(config_obj)
 
