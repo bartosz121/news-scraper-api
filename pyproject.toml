@@ -15,6 +15,7 @@ mongoengine-goodjson = "^1.1.8"
 # IMPORTANT pymongo version must be <=3.12.3 - if higher mongoengine-goodjson wont work
 pymongo = "<=3.12.3"
 flask-mongoengine = "^1.0.0"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 black = { version = "^22.3.0", allow-prereleases = true }
