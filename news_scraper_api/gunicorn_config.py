@@ -1,6 +1,6 @@
 loglevel = "info"
-errorlog = "-"  # stderr
-accesslog = "-"  # stdout
+errorlog = "gunicorn-error.log"
+accesslog = "gunicorn-access.log"
 worker_tmp_dir = "/dev/shm"
 graceful_timeout = 120
 timeout = 120
