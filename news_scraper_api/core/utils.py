@@ -31,3 +31,18 @@ def get_object_or_404(class_, *args, **kwargs):
         abort(404, message=f"{class_.__name__} not found.")
     else:
         return obj
+
+
+def get_page_number():
+    page = request.args.get("page", None)
+    if not page:
+        return 1
+
+    try:
+        page = int(page)
+        if page < 1:
+            raise ValueError()
+    except ValueError:
+        abort(400, message="Wrong page number")
+    else:
+        return page
