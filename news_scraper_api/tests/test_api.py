@@ -2,11 +2,9 @@ import os
 import json
 import pytest
 from dotenv import load_dotenv
-from mongoengine import connect, disconnect
+
 from werkzeug.exceptions import HTTPException
 
-from news_scraper_api import config
-from news_scraper_api.app import create_app
 from news_scraper_api.core.utils import get_object_or_404, get_page_number
 from news_scraper_api.models.article import Article
 from news_scraper_api.resources.news import ITEMS_PER_PAGE
@@ -16,8 +14,6 @@ load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 
-mock_ids = []
-
 post_request_data = {
     "title": "Title 99",
     "source_name": "BBC",
@@ -26,29 +22,6 @@ post_request_data = {
     "img_url": "img_url99",
     "description": "description99",
 }
-
-
-@pytest.fixture(scope="module")
-def db():
-    connect("mongomockdb", host="mongomock://localhost")
-    for a in mock_articles:
-        a = Article(**a).save()
-        mock_ids.append(a.id)
-
-    yield
-
-    disconnect()
-
-
-@pytest.fixture
-def app(db):
-    app = create_app(config.TestConfig())
-    return app
-
-
-@pytest.fixture
-def client(app):
-    return app.test_client()
 
 
 def test_get_object_or_404(app):
@@ -77,7 +50,7 @@ def test_invalid_get_page_number(client):
 # Tests for "/api/v1/news/"
 
 
-def test_get_news(client):
+def test_get_news(client, mock_ids):
     """/api/v1/news"""
     expected_length = 10  # ITEMS_PER_PAGE; we have 12 articles in mock data
     with client:
@@ -98,7 +71,7 @@ def test_get_news(client):
         )
 
 
-def test_get_article_by_id(client):
+def test_get_article_by_id(client, mock_ids):
     """Tests /api/v1/news/`id`"""
     mock_article_index = 2
 
@@ -168,7 +141,7 @@ def test_news_post_request(client):
         assert data["title"] == post_request_data["title"]
 
 
-def test_news_put_request(client):
+def test_news_put_request(client, mock_ids):
     mock_article_id = mock_ids[0]
     updated_title = "Updated title"
 
@@ -225,7 +198,7 @@ def test_pagination_hasNext_is_false(client):
         assert data["hasNext"] == expected_result
 
 
-def test_pagination_result(client):
+def test_pagination_result(client, mock_ids):
     expected_page_1 = mock_ids[:ITEMS_PER_PAGE]
     expected_page_2 = mock_ids[ITEMS_PER_PAGE:]
 
