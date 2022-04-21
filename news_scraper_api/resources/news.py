@@ -4,8 +4,11 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from bson.errors import InvalidId
 
 from core.parsers import post_parser
-from core.utils import api_key_required, get_object_or_404
+from core.utils import api_key_required, get_object_or_404, get_page_number
 from models.article import Article
+
+
+ITEMS_PER_PAGE = 10
 
 
 class News(Resource):
@@ -21,16 +24,24 @@ class News(Resource):
 
         # /api/v1/news?source=`source_name`
         if source_name := request.args.get("source", None):
-            news_from_source = (
-                Article.objects(source_name__iexact=source_name)
-                .order_by("-created")
-                .to_json()
+            news_qs = Article.objects(source_name__iexact=source_name).order_by(
+                "-created"
             )
-            return Response(news_from_source, mimetype="application/json")
+        else:
+            # /api/v1/news
+            news_qs = Article.objects.order_by("-created")
 
-        # /api/v1/news
-        news = Article.objects.order_by("-created").to_json()
-        return Response(news, mimetype="application/json")
+        item_count = news_qs.count()
+        page = get_page_number()
+        offset = (page - 1) * ITEMS_PER_PAGE
+
+        data = {
+            "result": news_qs.skip(offset).limit(ITEMS_PER_PAGE).to_json(),
+            "hasNext": True if (offset + ITEMS_PER_PAGE) <= item_count else False,
+            "pageNumber": page,
+        }
+
+        return data
 
     @api_key_required
     def post(self):
