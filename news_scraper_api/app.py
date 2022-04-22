@@ -1,5 +1,6 @@
 from typing import Type
 from flask import Blueprint, Flask
+from flask_cors import CORS
 from flask_restful import Api
 
 from config import Config, ProdConfig, get_config
@@ -12,6 +13,7 @@ def create_app(config_obj: Type[Config] = None):
         config_obj = ProdConfig()
 
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config_obj)
 
     if not config_obj.TESTING:
