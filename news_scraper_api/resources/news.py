@@ -1,10 +1,9 @@
 from flask import Response
 from flask_restful import Resource, abort, request
-from mongoengine.errors import NotUniqueError, ValidationError
-from bson.errors import InvalidId
+from mongoengine.errors import NotUniqueError
 
 from core.parsers import post_parser
-from core.utils import api_key_required, get_object_or_404, get_page_number
+from core.utils import api_key_required, get_object_or_abort, get_page_number
 from models.article import Article
 
 
@@ -15,11 +14,7 @@ class News(Resource):
     def get(self, id=None):
         # /api/v1/news/`article_id`
         if id:
-            try:
-                article = get_object_or_404(Article, id=id)
-            except (ValidationError, InvalidId) as e:
-                abort(502, message=e.message)
-
+            article = get_object_or_abort(Article, id=id)
             return Response(article.to_json(), mimetype="application/json")
 
         # /api/v1/news?source=`source_name`
@@ -60,10 +55,7 @@ class News(Resource):
     @api_key_required
     def put(self, id):
         payload = post_parser.parse_args(strict=True)
-        try:
-            article = get_object_or_404(Article, id=id)
-        except (ValidationError, InvalidId) as e:
-            abort(502, message=e.message)
+        article = get_object_or_abort(Article, id=id)
 
         article.update(**payload)
         updated_article = Article.objects.get(id=id).to_json()
@@ -72,6 +64,6 @@ class News(Resource):
 
     @api_key_required
     def delete(self, id):
-        article = get_object_or_404(Article, id=id)
+        article = get_object_or_abort(Article, id=id)
         article.delete()
         return 200
