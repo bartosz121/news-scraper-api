@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from werkzeug.exceptions import HTTPException
 
-from news_scraper_api.core.utils import get_object_or_404, get_page_number
+from news_scraper_api.core.utils import get_object_or_abort, get_page_number
 from news_scraper_api.models.article import Article
 from news_scraper_api.resources.news import ITEMS_PER_PAGE
 from news_scraper_api.tests.mock_data import mock_articles
@@ -24,15 +24,19 @@ post_request_data = {
 }
 
 
-def test_get_object_or_404(app):
-    with pytest.raises(HTTPException):
-        get_object_or_404(Article, source_unique_id="id657569213")
-
-
 def test_valid_get_page_number(client):
     with client:
         r_valid = client.get("/api/v1/news?page=2")
         assert r_valid.status_code == 200
+
+
+def test_get_object_or_abort(mock_ids):
+    valid = get_object_or_abort(Article, id=mock_ids[0])
+    assert valid
+
+    with pytest.raises(HTTPException):
+        get_object_or_abort(Article, id="invalid_id")
+        get_object_or_abort(Article, id=mock_ids[0][:-4] + "0000")
 
 
 def test_invalid_get_page_number(client):
