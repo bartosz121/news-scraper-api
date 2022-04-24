@@ -1,8 +1,11 @@
 import os
 import functools
+
+from bson.errors import InvalidId
 from flask import request
 from flask_restful import abort
 from mongoengine import errors
+from mongoengine.errors import ValidationError
 
 
 def api_key_is_valid(api_key):
@@ -24,11 +27,13 @@ def api_key_required(func):
     return wrapper
 
 
-def get_object_or_404(class_, *args, **kwargs):
+def get_object_or_abort(class_, *args, **kwargs):
     try:
         obj = class_.objects.get(*args, **kwargs)
-    except errors.DoesNotExist as e:
+    except errors.DoesNotExist:
         abort(404, message=f"{class_.__name__} not found.")
+    except (ValidationError, InvalidId) as exc:
+        abort(400, message=str(exc))
     else:
         return obj
 
