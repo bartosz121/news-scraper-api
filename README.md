@@ -1,6 +1,6 @@
 # News Scraper API
 
-Scrapes news using `Scrapy` every 3 hours using `Celery` and stores them in Mongo database which are served by REST API built with `Flask` and `Flask-RESTful`
+Scrapes news with `Scrapy` every 3 hours using `Celery` and stores them in Mongo database which are served by REST API built with `Flask` and `Flask-RESTful`
 
 List of [Scrapy spiders](https://docs.scrapy.org/en/latest/topics/spiders.html) :
 
