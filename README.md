@@ -43,6 +43,20 @@ $ curl -s "http://localhost:5000/api/v1/news?source=bbc" | json_pp
 }
 ```
 
+- ### Search articles by keywords
+
+```bash
+# api/v1/news?search={keywords}
+$ curl -s "http://localhost:5000/api/v1/news?search=moon" | json_pp
+{
+   "hasNext" : true,
+   "pageNumber" : 1,
+   "result" : "[{\"title\": \"Lunar Eclipse 2022: When and How to Watch the Blood Moon \", \"source_name\": \"The Wall Street Journal\", \"source_unique_id\": \"1652533115\", \"url\": \"https://www.wsj.com/articles/lunar-eclipse-2022-when-to-watch-blood-moon-11652533115?mod=latest_headlines\", \"img_url\": \"https://images.wsj.net/im-544042?width=100&height=67\", \"created\": \"2022-05-15T13:00:26.639000\", \"_text_score\": 0.5833333333333334, \"id\": \"6280f96aa06562aa6b45ff73\"},
+   ...
+   ]"
+}
+```
+
 - ### Specify page number in query parameter
 
 ```bash
