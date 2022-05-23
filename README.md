@@ -107,3 +107,9 @@ You can run scrapy spiders manually with `scrapy crawl {spider_name}` command
 $ docker exec -it newsscraperapi-flask sh
   scrapy crawl bbc
 ```
+
+## TODO
+
+- [x] ~~Search by title~~
+- [ ] Add tests to `search by` (The $text operator is not implemented in mongomock yet)
+- [ ] Some articles are scraped with broken image urls
