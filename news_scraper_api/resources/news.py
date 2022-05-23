@@ -22,6 +22,9 @@ class News(Resource):
             news_qs = Article.objects(source_name__iexact=source_name).order_by(
                 "-created"
             )
+        # /api/v1/news?search=search%20by
+        elif search_by := request.args.get("search", None):
+            news_qs = Article.objects.search_text(search_by).order_by("-created")
         else:
             # /api/v1/news
             news_qs = Article.objects.order_by("-created")
