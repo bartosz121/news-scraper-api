@@ -11,3 +11,14 @@ class Article(gj.Document):
     img_url = mongo.StringField()
     description = mongo.StringField()
     created = mongo.DateTimeField(default=datetime.utcnow())
+
+    meta = {
+        "indexes": [
+            {
+                "fields": [
+                    "$title",
+                ],
+                "default_language": "english",
+            }
+        ]
+    }
