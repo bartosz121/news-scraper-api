@@ -10,7 +10,7 @@ class Article(gj.Document):
     url = mongo.StringField(required=True)
     img_url = mongo.StringField()
     description = mongo.StringField()
-    created = mongo.DateTimeField(default=datetime.utcnow())
+    created = mongo.DateTimeField(default=datetime.utcnow)
 
     meta = {
         "indexes": [
