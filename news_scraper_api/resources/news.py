@@ -11,6 +11,7 @@ ITEMS_PER_PAGE = 10
 
 
 class News(Resource):
+    # TODO those ifs look ugly fix later
     def get(self, id=None):
         # /api/v1/news/`article_id`
         if id:
@@ -22,10 +23,16 @@ class News(Resource):
             news_qs = Article.objects(source_name__iexact=source_name).order_by(
                 "-created"
             )
-        # /api/v1/news?search=search%20by
-        elif search_by := request.args.get("search", None):
-            news_qs = Article.objects.search_text(search_by).order_by("$text_score")
-        else:
+
+        # /api/v1/news?search=`search%20by`
+        if search_by := request.args.get("search", None):
+            # check if news_qs exists(was created in if statement above), if true run text search on it, otherwise create it
+            if "news_qs" in locals():
+                news_qs = news_qs.search_text(search_by).order_by("$text_score")
+            else:
+                news_qs = Article.objects.search_text(search_by).order_by("$text_score")
+
+        if not source_name and not search_by:
             # /api/v1/news
             news_qs = Article.objects.order_by("-created")
 
