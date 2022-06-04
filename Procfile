@@ -1,1 +1,1 @@
-web: gunicorn "news_scraper_api.app:create_app()"
+web: cd news_scraper_api && gunicorn "app:create_app()"
